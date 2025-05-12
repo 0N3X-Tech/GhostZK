@@ -1,0 +1,45 @@
+{
+  "name": "@ghostzk/relayer",
+  "version": "0.1.0",
+  "description": "Meta-transaction relayer service for GhostZK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "test": "jest",
+    "lint": "eslint src --ext .ts",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "ethers": "^6.3.0",
+    "dotenv": "^16.0.3",
+    "winston": "^3.8.2",
+    "cors": "^2.8.5",
+    "morgan": "^1.10.0",
+    "compression": "^1.7.4",
+    "@aleohq/sdk": "^0.5.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/cors": "^2.8.13",
+    "@types/jsonwebtoken": "^9.0.1",
+    "@types/morgan": "^1.9.4",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^18.15.11",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.0.5",
+    "rimraf": "^4.4.1",
+    "supertest": "^6.3.3",
+    "@types/supertest": "^2.0.12"
+  },
+  "author": "GhostZK Team",
+  "license": "MIT"
+}

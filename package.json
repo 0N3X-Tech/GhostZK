@@ -1,0 +1,44 @@
+{
+  "name": "ghostzk",
+  "version": "0.1.0",
+  "description": "Privacy-preserving Aleo-based wallet and token protocol",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "clean": "npm run clean --workspaces"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5",
+    "@types/node": "^18.15.11",
+    "jest": "^29.5.0",
+    "mocha": "^10.2.0",
+    "ts-node": "^10.9.1",
+    "prettier": "^2.8.7",
+    "eslint": "^8.38.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ghostzk.git"
+  },
+  "keywords": [
+    "aleo",
+    "zero-knowledge",
+    "zk",
+    "privacy",
+    "blockchain",
+    "wallet",
+    "tokens"
+  ],
+  "author": "GhostZK Team",
+  "license": "MIT"
+}

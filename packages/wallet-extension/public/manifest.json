@@ -1,0 +1,54 @@
+{
+  "manifest_version": 3,
+  "name": "GhostZK Wallet",
+  "version": "0.1.0",
+  "description": "Privacy-preserving wallet for Aleo blockchain",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "GhostZK Wallet"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*.aleo.org/"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inpage.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "ghostzk@example.com",
+      "strict_min_version": "80.0"
+    }
+  }
+}
