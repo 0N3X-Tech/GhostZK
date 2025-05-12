@@ -1,4 +1,9 @@
 program token.aleo {
+    // Staking-related mappings
+    mapping staked_balances: address => u64;
+    mapping stake_start_times: address => u64;
+    mapping reward_rates: field => u64;
+    mapping total_staked: field => u64;
     // Record definitions
     record Token {
         // The token owner
@@ -198,6 +203,124 @@ program token.aleo {
     // Get public balance for an address
     function get_public_balance(public address: address) -> u64 {
         return Mapping::get_or_use(balances, address, 0u64);
+    }
+    
+    // Stake tokens publicly
+    transition stake_tokens(public amount: u64) {
+        // Get caller's address
+        let caller: address = self.caller;
+        
+        // Retrieve current balance
+        let caller_balance: u64 = Mapping::get(balances, caller);
+        
+        // Ensure caller has sufficient balance
+        assert(caller_balance >= amount);
+        
+        // Get current time (in blocks)
+        let current_block: u64 = block.height;
+        
+        // Update public balance
+        Mapping::set(balances, caller, caller_balance - amount);
+        
+        // Get current staked amount
+        let current_staked: u64 = Mapping::get_or_use(staked_balances, caller, 0u64);
+        
+        // Update staked balance
+        Mapping::set(staked_balances, caller, current_staked + amount);
+        
+        // Record stake start time
+        Mapping::set(stake_start_times, caller, current_block);
+        
+        // Update total staked amount
+        let total: u64 = Mapping::get_or_use(total_staked, TOKEN_SYMBOL, 0u64);
+        Mapping::set(total_staked, TOKEN_SYMBOL, total + amount);
+        
+        return;
+    }
+    
+    // Unstake tokens and claim rewards
+    transition unstake_tokens(public amount: u64) {
+        // Get caller's address
+        let caller: address = self.caller;
+        
+        // Get current staked amount
+        let staked_amount: u64 = Mapping::get(staked_balances, caller);
+        
+        // Ensure caller has sufficient staked tokens
+        assert(staked_amount >= amount);
+        
+        // Calculate rewards
+        let rewards: u64 = calculate_rewards(caller, amount);
+        
+        // Get current block height
+        let current_block: u64 = block.height;
+        
+        // Update staked balance
+        Mapping::set(staked_balances, caller, staked_amount - amount);
+        
+        // Update stake start time (reset for remaining staked amount)
+        if (staked_amount > amount) {
+            Mapping::set(stake_start_times, caller, current_block);
+        }
+        
+        // Update total staked amount
+        let total: u64 = Mapping::get(total_staked, TOKEN_SYMBOL);
+        Mapping::set(total_staked, TOKEN_SYMBOL, total - amount);
+        
+        // Update caller's balance with unstaked amount plus rewards
+        let caller_balance: u64 = Mapping::get_or_use(balances, caller, 0u64);
+        Mapping::set(balances, caller, caller_balance + amount + rewards);
+        
+        // If rewards were given, update total supply
+        if (rewards > 0u64) {
+            let current_supply: u64 = Mapping::get(total_supply, TOKEN_SYMBOL);
+            Mapping::set(total_supply, TOKEN_SYMBOL, current_supply + rewards);
+        }
+        
+        return;
+    }
+    
+    // Calculate rewards for staking
+    function calculate_rewards(staker: address, amount: u64) -> u64 {
+        // Get staking start time
+        let start_block: u64 = Mapping::get_or_use(stake_start_times, staker, 0u64);
+        
+        // Get current block height
+        let current_block: u64 = block.height;
+        
+        // Calculate staking duration in blocks
+        let duration: u64 = current_block - start_block;
+        
+        // Get reward rate (rewards per block per token)
+        // Default to 1 per 10000 blocks (0.01% per block)
+        let rate: u64 = Mapping::get_or_use(reward_rates, TOKEN_SYMBOL, 1u64);
+        
+        // Calculate rewards: amount * duration * rate / 10000
+        // The division by 10000 is to convert the rate to a percentage
+        let rewards: u64 = amount * duration * rate / 10000u64;
+        
+        return rewards;
+    }
+    
+    // Set the reward rate for staking (admin only)
+    transition set_reward_rate(public rate: u64) {
+        // In a real implementation, you would check that the caller is an admin
+        // For now, we'll allow anyone to set it for demonstration purposes
+        
+        // Set the reward rate for the token
+        Mapping::set(reward_rates, TOKEN_SYMBOL, rate);
+        
+        return;
+    }
+    
+    // Get staked balance for an address
+    function get_staked_balance(public address: address) -> u64 {
+        return Mapping::get_or_use(staked_balances, address, 0u64);
+    }
+    
+    // Get total staked amount for the token
+    function get_total_staked() -> u64 {
+        return Mapping::get_or_use(total_staked, TOKEN_SYMBOL, 0u64);
     }
     
     // Get total token supply
