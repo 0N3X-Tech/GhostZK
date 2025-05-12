@@ -107,7 +107,7 @@ We welcome contributions to GhostZK! Please see [CONTRIBUTING.md](CONTRIBUTING.m
 
 ## Security
 
-Security is our highest priority. If you discover a security vulnerability, please send an email to security@ghostzk.com. Please do not create public GitHub issues for security vulnerabilities.
+Security is our highest priority. If you discover a security vulnerability, please send an email to hello@onex.technology. Please do not create public GitHub issues for security vulnerabilities.
 
 ## License
 
